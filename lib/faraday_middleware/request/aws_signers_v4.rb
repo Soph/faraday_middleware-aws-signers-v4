@@ -8,15 +8,15 @@ class FaradayMiddleware::AwsSignersV4 < Faraday::Middleware
     end
 
     def headers
-      @env.request_headers
+      @env[:request_headers]
     end
 
     def body
-      @env.body || ''
+      @env[:body] || ''
     end
 
     def endpoint
-      url = @env.url.dup
+      url = @env[:url].dup
 
       # Escape the query string or the request won't sign correctly
       if url and url.query
@@ -27,7 +27,7 @@ class FaradayMiddleware::AwsSignersV4 < Faraday::Middleware
     end
 
     def http_method
-      @env.method.to_s.upcase
+      @env[:method].to_s.upcase
     end
 
     private
@@ -67,9 +67,9 @@ class FaradayMiddleware::AwsSignersV4 < Faraday::Middleware
     return unless @net_http
 
     if Net::HTTP::HAVE_ZLIB
-      env.request_headers['Accept-Encoding'] ||= 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3'
+      env[:request_headers]['Accept-Encoding'] ||= 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3'
     end
 
-    env.request_headers['Accept'] ||= '*/*'
+    env[:request_headers]['Accept'] ||= '*/*'
   end
 end
